@@ -6,7 +6,8 @@
     <title>Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        :root {
+        /* ... (styles remain the same) ... */
+         :root {
             --primary-color: #3498db;
             --primary-hover: #2980b9;
             --danger-color: #e74c3c;
@@ -340,7 +341,6 @@
              }
         }
     </style>
-
 </head>
 
 <body>
@@ -394,7 +394,6 @@
                                     {{ $u->name }} ({{ $u->email }}) - <strong>Role:</strong> {{ ucfirst($u->role) }}
                                 </div>
                                 <div class="actions-group">
-                                    {{-- Update Form --}}
                                     <form action="{{ route('users.update', $u->id) }}" method="POST" class="inline">
                                         @csrf
                                         @method('PUT')
@@ -408,7 +407,6 @@
                                         <button type="submit" class="btn-small">Update</button>
                                     </form>
 
-                                    {{-- Delete Form --}}
                                     <form action="{{ route('users.destroy', $u->id) }}" method="POST" class="inline">
                                         @csrf
                                         @method('DELETE')
@@ -482,8 +480,16 @@
                             <span>Transaksi Selesai</span>
                         </div>
                     </div>
-
-
+                    <div class="form-title">Tambah Siswa Baru</div>
+                    <form action="{{ route('users.store') }}" method="POST">
+                        @csrf
+                        <input type="text" name="name" placeholder="Nama Siswa" required>
+                        <input type="email" name="email" placeholder="Email Siswa" required>
+                        <input type="password" name="password" placeholder="Password Awal" required>
+                        <input type="hidden" name="role" value="siswa">
+                        <p style="margin-top: 5px; margin-bottom: 10px; font-size: 0.9em; color: #555;"><em>Pengguna baru akan didaftarkan sebagai Siswa.</em></p>
+                        <button type="submit">Tambah Siswa</button>
+                    </form>
                     <div class="form-title">Top Up Saldo Siswa</div>
                     <form action="{{ route('wallet.topupForSiswa') }}" method="POST">
                         @csrf
@@ -571,7 +577,7 @@
                 </div>
 
             @elseif(Auth::user()->role === 'siswa')
-                <div class="section">
+                 <div class="section">
                     <h2>Selamat datang, {{ Auth::user()->name }}</h2>
                      <div class="stats-grid">
                          <div class="stat-item">
@@ -626,7 +632,7 @@
                         <select name="recipient_id" required>
                             <option value="" disabled selected>Pilih Penerima</option>
                             @foreach($users as $u)
-                                @if($u->id !== Auth::id()) {{-- Don't list self --}}
+                                @if($u->id !== Auth::id()) 
                                 <option value="{{ $u->id }}">{{ $u->name }} ({{ $u->email }})</option>
                                 @endif
                             @endforeach
@@ -660,23 +666,19 @@
     </div>
 
     <script>
-        // Combined print function
         function printContent(elementId) {
             const printArea = document.getElementById(elementId);
             if (printArea) {
-                // Optionally, add a class to body during print to help with specific print styles
                 document.body.classList.add('printing');
                 window.print();
-                document.body.classList.remove('printing'); // Clean up after print dialog closes
+                document.body.classList.remove('printing');
             } else {
                 console.error('Print area not found:', elementId);
             }
         }
 
-        // Optional: Add confirmation for all delete buttons for consistency
-        const deleteForms = document.querySelectorAll('form[method="POST"] button.btn-danger'); // More specific selector
+        const deleteForms = document.querySelectorAll('form[method="POST"] button.btn-danger');
         deleteForms.forEach(button => {
-            // Check if onclick is already set by Laravel blade (for admin delete)
             if (!button.getAttribute('onclick')) {
                  const form = button.closest('form');
                  if (form && form.querySelector('input[name="_method"][value="DELETE"]')) {
@@ -691,5 +693,4 @@
     </script>
 
 </body>
-
 </html>
